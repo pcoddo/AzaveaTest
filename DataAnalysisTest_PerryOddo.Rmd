@@ -59,14 +59,15 @@ dfPlot <- subset(x = df, select = c("mpg", "displacement", "horsepower", "weight
 ```
 ```{r, message=FALSE, warning=FALSE}
 # Produce plot
-p1 <- ggpairs(dfPlot,
+png("Figures/Figure1_pairsPlot.png", width = 6.5, height = 6.5, units = 'in', res = 300)
+f1 <- ggpairs(dfPlot,
               mapping = ggplot2::aes(color = binary_median),
               upper = list(continuous = wrap("density", alpha = 0.5), combo = "box"),
               lower = list(continuous = wrap("points", alpha = 0.3), combo = wrap("dot", alpha = 0.4)),
               diag = list(continuous = wrap("densityDiag")),
-              title = "Vehicle mpg data")
-p1
-
+              title = "Figure 1. Vehicle variable pairs plot")
+f1
+dev.off()
 ```
 
 
