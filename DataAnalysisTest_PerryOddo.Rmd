@@ -40,7 +40,7 @@ df$binary_median = sapply(1:length(df$mpg), function(x){
 ```
 
 
-#### (b) Which of the other variables seem most likely to be useful in predicting whether a car's mpg is above or below its median? Describe your findings and submit visual representations of the relationship between mpg_binary and other variables.
+**(b)** Which of the other variables seem most likely to be useful in predicting whether a car's mpg is above or below its median? **Describe your findings and submit visual representations of the relationship between mpg_binary and other variables.**
 
 ```{r, message=FALSE}
 # Reformat categorical variables
@@ -70,9 +70,9 @@ f1
 #dev.off()
 ```
 
-(c) Split the data into a training set and a test set.
+**(c)** Split the data into a training set and a test set.
 
-(d) Perform two of the following in order to predict mpg_binary:
+**(d)** Perform two of the following in order to predict mpg_binary:
 
 
 
