@@ -6,6 +6,7 @@ output: html_document
 ---
 
 
+
 ## Part 2: Applied Question
 **For this second applied question you will develop several predictive models. These should be written in R or Python and the code should be submitted. The models will predict whether a car will get high or low gas mileage. The question will be based on the Cars_mileage data set that is a part of this repo.**
 
@@ -59,7 +60,7 @@ dfPlot <- subset(x = df, select = c("mpg", "displacement", "horsepower", "weight
 ```
 ```{r, message=FALSE, warning=FALSE}
 # Produce plot
-png("Figures/Figure1_pairsPlot.png", width = 6.5, height = 6.5, units = 'in', res = 300)
+png("Figures/Figure1_pairsPlot.png", width = 6.5, height = 6.5, units = 'in', res = 150)
 f1 <- ggpairs(dfPlot,
               mapping = ggplot2::aes(color = binary_median),
               upper = list(continuous = wrap("density", alpha = 0.5), combo = "box"),
