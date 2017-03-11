@@ -1,14 +1,14 @@
 ---
-title: "DataAnalysisTest"
 author: "Perry Oddo"
 date: "March 10, 2017"
 output: html_document
 ---
+#Data Analysis Test
 
 ## Part 1: Conceptual Question
 **(a)** A dataset contains data for 350 manufacturing companies in Europe. The following variables are included in the data for each company: industry, number of employees, salary of the CEO, and total profit. **We are interested in learning which variables impact the CEO's salary.**
 
-    *test response*
+    test response
   
 **(b)** A market research company is hired to help a startup analyze their new product. **We want to know whether the product will be a success or failure.** Similar products exist on the market so the market research company gathers data on 31 similar products. The company records the following data points about each previously launched product: price of the product, competition price, marketing budget, ten other variables, and whether or not it succeeded or failed.
 
@@ -69,13 +69,15 @@ dfPlot <- subset(x = df, select = c("mpg", "displacement", "horsepower", "weight
 ```
 ```{r, message=FALSE, warning=FALSE}
 # Produce plot
-png("Figures/Figure1_pairsPlot.png", width = 6.5, height = 6.5, units = 'in', res = 300)
+png("Figures/Figure1_pairsPlot.png", width = 6.5, height = 5.5, units = 'in', res = 300)
 f1 <- ggpairs(dfPlot,
               mapping = ggplot2::aes(color = binary_median),
               upper = list(continuous = wrap("density", alpha = 0.5), combo = "box"),
               lower = list(continuous = wrap("points", alpha = 0.3), combo = wrap("dot", alpha = 0.4)),
               diag = list(continuous = wrap("densityDiag")),
-              title = "Figure 1. Vehicle variable pairs plot")
+              title = "Figure 1. Vehicle variable pairs plot",
+              legend = c(1,1)) +
+  theme(legend.position = "right") 
 f1
 dev.off()
 ```
