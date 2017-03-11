@@ -70,6 +70,9 @@ f1
 #dev.off()
 ```
 
+(c) Split the data into a training set and a test set.
+
+(d) Perform two of the following in order to predict mpg_binary:
 
 
 
