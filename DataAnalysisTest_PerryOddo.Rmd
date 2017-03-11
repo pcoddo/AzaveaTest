@@ -60,7 +60,7 @@ dfPlot <- subset(x = df, select = c("mpg", "displacement", "horsepower", "weight
 ```
 ```{r, message=FALSE, warning=FALSE}
 # Produce plot
-png("Figures/Figure1_pairsPlot.png", width = 6.5, height = 6.5, units = 'in', res = 150)
+#png("Figures/Figure1_pairsPlot.png", width = 6.5, height = 6.5, units = 'in', res = 150)
 f1 <- ggpairs(dfPlot,
               mapping = ggplot2::aes(color = binary_median),
               upper = list(continuous = wrap("density", alpha = 0.5), combo = "box"),
@@ -68,7 +68,7 @@ f1 <- ggpairs(dfPlot,
               diag = list(continuous = wrap("densityDiag")),
               title = "Figure 1. Vehicle variable pairs plot")
 f1
-dev.off()
+#dev.off()
 ```
 
 **(c)** Split the data into a training set and a test set.
