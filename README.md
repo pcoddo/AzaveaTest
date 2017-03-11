@@ -17,8 +17,14 @@
 **(a)** Create a binary variable that represents whether the car's mpg is above or below its median. Above the median should be represented as 1. Name this variable **mpg_binary.**
 
 ```{r}
+# Clear all variables
+rm(list = ls())
+
+# Set seed
+set.seed(8675309)
+
 # Read read mileage data into new data frame
-df = read.csv("Cars_mileage.csv", header = T, sep = ",")
+df = read.csv("Cars_mileage.csv", header = T, sep = ",", na.strings = '?')
 
 # Add variable for median mileage
 df$binary_median = NA
@@ -35,11 +41,38 @@ df$binary_median = sapply(1:length(df$mpg), function(x){
   }
   
 })
+
 ```
 
 
-**(b)** Which of the other variables seem most likely to be useful in predicting whether a car's mpg is above or below its median? **Describe your findings and submit visual representations of the relationship between mpg_binary and other variables.**
+#### (b) Which of the other variables seem most likely to be useful in predicting whether a car's mpg is above or below its median? Describe your findings and submit visual representations of the relationship between mpg_binary and other variables.
 
+```{r, message=FALSE}
+# Reformat categorical variables
+catVar = c("cylinders", "year", "origin", "name", "binary_median")
+for(i in catVar){
+  df[,i] <- as.factor(df[,i])
+}
+
+### Pairs plot showing variable relationships
+# Load required packages
+require(GGally)
+require(ggplot2)
+
+# Subset predictor variables to plot
+dfPlot <- subset(x = df, select = c("mpg", "displacement", "horsepower", "weight", "acceleration", "year", "binary_median"))
+```
+```{r, message=FALSE, warning=FALSE}
+# Produce plot
+p1 <- ggpairs(dfPlot,
+              mapping = ggplot2::aes(color = binary_median),
+              upper = list(continuous = wrap("density", alpha = 0.5), combo = "box"),
+              lower = list(continuous = wrap("points", alpha = 0.3), combo = wrap("dot", alpha = 0.4)),
+              diag = list(continuous = wrap("densityDiag")),
+              title = "Vehicle mpg data")
+p1
+
+```
 **(c)** Split the data into a training set and a test set.
 
 **(d)** Perform two of the following in order to predict mpg_binary:
