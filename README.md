@@ -1,5 +1,5 @@
 # AzaveaTest
-Data analysis test for Azavea
+
 
 ## Part 1: Conceptual Question
 **(a)** A dataset contains data for 350 manufacturing companies in Europe. The following variables are included in the data for each company: industry, number of employees, salary of the CEO, and total profit. **We are interested in learning which variables impact the CEO's salary.**
@@ -12,8 +12,9 @@ Data analysis test for Azavea
 
 
 ## Part 2: Applied Question
+**For this second applied question you will develop several predictive models. These should be written in R or Python and the code should be submitted. The models will predict whether a car will get high or low gas mileage. The question will be based on the Cars_mileage data set that is a part of this repo.**
 
-(a) Create a binary variable that represents whether the car's mpg is above or below its median. Above the median should be represented as 1. Name this variable mpg_binary.
+**(a)** Create a binary variable that represents whether the car's mpg is above or below its median. Above the median should be represented as 1. Name this variable **mpg_binary.**
 
 ```{r}
 # Read read mileage data into new data frame
@@ -37,7 +38,11 @@ df$binary_median = sapply(1:length(df$mpg), function(x){
 ```
 
 
-#### (b) Which of the other variables seem most likely to be useful in predicting whether a car's mpg is above or below its median? Describe your findings and submit visual representations of the relationship between mpg_binary and other variables.
+**(b)** Which of the other variables seem most likely to be useful in predicting whether a car's mpg is above or below its median? **Describe your findings and submit visual representations of the relationship between mpg_binary and other variables.**
+
+**(c)** Split the data into a training set and a test set.
+
+**(d)** Perform two of the following in order to predict mpg_binary:
 
 
 
