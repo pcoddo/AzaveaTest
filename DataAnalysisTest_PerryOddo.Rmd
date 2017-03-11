@@ -2,7 +2,7 @@
 title: "DataAnalysisTest"
 author: "Perry Oddo"
 date: "March 10, 2017"
-output: html_document
+output: pdf_document
 ---
 
 
