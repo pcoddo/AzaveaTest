@@ -6,7 +6,8 @@ output: html_document
 #Data Analysis Test
 
 ## Part 1: Conceptual Question
-**This first question is conceptual and written responses are expected. For each item below, indicate whether the appropriate method would be classification or regression, and whether we are most interested in inference or prediction. Please include a written sentence or two explaining why you made this choice. Also, indidate what n and p are for each section.**
+**This first question is conceptual and written responses are expected. For each item below, indicate whether the appropriate method would be classification or regression, and whether we are most interested in inference or prediction. Please include a written sentence or two explaining why you made this choice. Also, indidate what n and p are for each section.**  
+
 
 **(a)** A dataset contains data for 350 manufacturing companies in Europe. The following variables are included in the data for each company: industry, number of employees, salary of the CEO, and total profit. **We are interested in learning which variables impact the CEO's salary.**
 
@@ -24,13 +25,17 @@ output: html_document
 **(a)** Create a binary variable that represents whether the car's mpg is above or below its median. Above the median should be represented as 1. Name this variable **mpg_binary.**
 
 ```{r}
+
 # Clear all variables
 rm(list = ls())
+graphics.off()
 
-# Read read mileage data into new data frame
-df = read.csv("Cars_mileage.csv", header = T, sep = ",", na.strings = '?')
+# Read read mileage data and remove incomplete variables (NA)
+df = read.csv("Cars_mileage.csv", 
+              header = T, 
+              sep = ",", 
+              na.strings = '?')
 
-# Remove incomplete variables (NA)
 df = na.omit(df)
 
 # Add variable for median mileage
@@ -50,28 +55,29 @@ df$binary_median = sapply(1:length(df$mpg), function(x){
 })
 
 ```
-
+  
 
 **(b)** Which of the other variables seem most likely to be useful in predicting whether a car's mpg is above or below its median? **Describe your findings and submit visual representations of the relationship between mpg_binary and other variables.**
 
 ```{r, message=FALSE, warning=FALSE}
-# Reformat categorical variables
-catVar = c("cylinders", "origin", "year", "name", "binary_median")
-for(i in catVar){
+
+# Reclassify discrete categorical variables
+cat_var = c("cylinders", "origin", "year", "name", "binary_median")
+for(i in cat_var){
   df[,i] = as.factor(df[,i])
 }
 
-### Pairs plot showing variable relationships
+### Visualize variable relationships
 # Load required packages
 require(GGally)
 require(ggplot2)
 
-# Subset predictor variables to plot
-df_Select = subset(x = df, select = c("mpg", "displacement", "horsepower", "weight", "acceleration", "year", "binary_median"))
+# Subset predictor variables to plot and save as new data frame
+df_2 = subset(x = df, select = c("mpg", "cylinders", "displacement", "horsepower", "weight", "acceleration", "year", "binary_median"))
 
-# Produce plot
+# Produce pairs plot
 #png("Figures/Figure1_pairsPlot.png", width = 8, height = 5.5, units = 'in', res = 300)
-f1 = ggpairs(df_Select,
+f1 = ggpairs(df_2,
               mapping = ggplot2::aes(color = binary_median),
               upper = list(continuous = wrap("density", alpha = 0.5), combo = "box"),
               lower = list(continuous = wrap("points", alpha = 0.3), combo = wrap("dot", alpha = 0.4)),
@@ -85,52 +91,63 @@ f1
   
 ![Figure1](https://github.com/pcoddo/AzaveaTest/blob/master/Figures/Figure1_pairsPlot.png)
 
-*Figure 1 shows the pairwise, marginal density, and box-and-whisker plots for the selected predictor variables. I excluded categorical and nominal variables such as cylinders and names, and included vehicle year as a factor term. Because "binary_median" is a derivative of "mpg", it is not especially illustrative to include "mpg" as a predictive factor. I remove it from the variable list for further analysis.
+*Figure 1 shows the pairwise, marginal density, and box-and-whisker plots for the selected predictor variables. I excluded categorical and nominal variables such as cylinders and names, and included vehicle year as a factor term. Because "binary_median" is a derivative of "mpg", it is not especially illustrative to include "mpg" as a predictive factor. I remove it from the variable list for further analysis.*
 
 ```{r}
-df_Select = df_Select[,2:ncol(df_Select)]
+
+# Remove mpg variable from data frame
+df_2 = df_2[,2:ncol(df_2)]
 ```  
   
 **(c)** Split the data into a training set and a test set.  
 ```{r}
+
 # Randomize dataset by assigning indices random numbers
 set.seed(90210)
 rand = runif(nrow(df))
-df_Select = df_Select[order(rand),]
+df_2 = df_2[order(rand),]
 
-# Normalize variables to range from 0 to 1 to remove influence of variable ranges
-# Create new normalized data frame for continuous variables
-normalize = function(x){
-  return((x - min(x)) / (max(x) - min(x)))
-}
-
-#df_Select_n = as.data.frame(sapply(df_Select[,1:4], normalize))
-
-# Create test set from continuous predictor variables (n = 40)
-#df_test = df_Select_n[1:40,]
-df_test = df_Select[1:40,]
-
-# Create training set from continuous predictor variables
-#df_train = df_Select_n[41:nrow(df),]
-df_train = df_Select[41:nrow(df),]
+# Create test (n = 40) and training sets from data frame 
+df_test = df_2[1:40,]
+df_train = df_2[41:nrow(df),]
 ```
   
 **(d)** Perform two of the following in order to predict mpg_binary:  
 
 1. *K-nearest neighbor analysis:*
 ```{r, message=FALSE}
+
 # Load library
 require(class)
 
+# Normalize variables to range from 0 to 1 to remove influence of variable ranges
+# Create new normalized data frame for continuous predictor variables (columns 2:5)
+normalize = function(x){
+  return((x - min(x)) / (max(x) - min(x)))
+}
+
+df_test_continuous = data.frame(sapply(df_test[,2:5], normalize), df_test$binary_median)
+df_train_continuous = data.frame(sapply(df_train[,2:5], normalize), df_train$binary_median)
+
+colnames(df_test_continuous)[5] = "binary_median"
+colnames(df_train_continuous)[5] = "binary_median"
+
+# Confirm new data structure
+print(summary(df_test_continuous))
+print(summary(df_train_continuous))
+```
+
+```{r}
+
 # Create data frames for target variable (binary_median) prediction
-df_test_target = df_Select[1:40, "binary_median"]
-df_train_target = df_Select[41:nrow(df), "binary_median"]
+df_test_target = df_2[1:40, "binary_median"]
+df_train_target = df_2[41:nrow(df), "binary_median"]
 
 # Set k value
 k = floor(sqrt(nrow(df)))
 
 # Create model
-knn_mod = knn(train = df_train, test = df_test, cl = df_train_target, k = k)
+knn_mod = knn(train = df_train_continuous, test = df_test_continuous, cl = df_train_target, k = k)
 table(df_test_target, knn_mod)
 
 # Create table to visualize model results
@@ -138,7 +155,7 @@ table(df_test_target, knn_mod)
 |                   |                 |        KNN model prediction|       |
 |------------------:|----------------:|:---------------:|-----------------|
 |                   |                 | 0: Below_median | 1: Above_median |
-| **Original Data** | 0: Below_median | **23**          | 1               |
+| **Original Data** | 0: Below_median | **24**          | 0               |
 |                   | 1: Above_median | 0               | **16**          |  
 
   
@@ -161,8 +178,8 @@ rpart.plot(cart_mod, type = 3, digits = 3, fallen.leaves = TRUE)
 *This looks wonky, let's try re-running the model by excluding the factor 'year' variable.  
 
 ```{r}
-# Re-run CART model to exclude year
-cart_mod2 <- rpart(binary_median ~., data = df_train[c(1,2,3,4,6)])
+# Re-run CART model to exclude categorical variables
+cart_mod2 <- rpart(binary_median ~., data = df_train_continuous)
 
 # Plot new results
 #png("Figures/Figure3_TreeB.png", width = 4, height = 4, units = 'in', res = 300)
@@ -171,9 +188,11 @@ rpart.plot(cart_mod2, type = 3, digits = 3, fallen.leaves = TRUE)
 ```
   
 ![Figure3](https://github.com/pcoddo/AzaveaTest/blob/master/Figures/Figure3_TreeB.png)  
+
 ```{r}
+
 # Predict test data based on trained model
-cart_mod_test <- predict(cart_mod2, df_test, type = "class")
+cart_mod_test <- predict(cart_mod2, df_test_continuous, type = "class")
 table(df_test_target, cart_mod_test)
 
 # Create table to visualize model results
@@ -181,5 +200,5 @@ table(df_test_target, cart_mod_test)
 |                   |                 |       CART model prediction|      |
 |------------------:|----------------:|:---------------:|-----------------|
 |                   |                 | 0: Below_median | 1: Above_median |
-| **Original Data** | 0: Below_median | **23**          | 1               |
+| **Original Data** | 0: Below_median | **22**          | 2               |
 |                   | 1: Above_median | 0               | **16**          |  
