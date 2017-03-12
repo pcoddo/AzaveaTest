@@ -1,9 +1,10 @@
 ---
 author: "Perry Oddo"
-date: "March 10, 2017"
+date: "March 12, 2017"
 output: html_document
+R.Version: 3.3.3
 ---
-
+***
 #Data Analysis Test
 
 ## Part 1: Conceptual Question
@@ -12,7 +13,7 @@ output: html_document
 
 **(a)** A dataset contains data for 350 manufacturing companies in Europe. The following variables are included in the data for each company: industry, number of employees, salary of the CEO, and total profit. **We are interested in learning which variables impact the CEO's salary.**
 
-*test response*
+> *test response*
   
 **(b)** A market research company is hired to help a startup analyze their new product. **We want to know whether the product will be a success or failure.** Similar products exist on the market so the market research company gathers data on 31 similar products. The company records the following data points about each previously launched product: price of the product, competition price, marketing budget, ten other variables, and whether or not it succeeded or failed.
 
@@ -92,7 +93,7 @@ f1
   
 ![Figure1](https://github.com/pcoddo/AzaveaTest/blob/master/Figures/Figure1_pairsPlot.png)
 
-*Figure 1 shows the pairwise, marginal density, and box-and-whisker plots for the selected predictor variables. I excluded categorical and nominal variables such as cylinders and names, and included vehicle year as a factor term. Because "binary_median" is a derivative of "mpg", it is not especially illustrative to include "mpg" as a predictive factor. I remove it from the variable list for further analysis.*
+>*Figure 1 shows the pairwise, marginal density, and box-and-whisker plots for the selected predictor variables. I excluded categorical and nominal variables such as cylinders and names, and included vehicle year as a factor term. Because "binary_median" is a derivative of "mpg", it is not especially illustrative to include "mpg" as a predictive factor. I remove it from the variable list for further analysis.*
 
 ```{r}
 
@@ -176,7 +177,7 @@ rpart.plot(cart_mod, type = 3, digits = 3, fallen.leaves = TRUE)
 ```
   
 ![Figure2](https://github.com/pcoddo/AzaveaTest/blob/master/Figures/Figure2_TreeA.png)
-*This looks wonky, let's try re-running the model by excluding the factor 'year' variable.  
+>*This looks wonky, let's try re-running the model by excluding the factor 'year' variable.*  
 
 ```{r}
 # Re-run CART model to exclude categorical variables
