@@ -31,6 +31,9 @@ set.seed(8675309)
 # Read read mileage data into new data frame
 df = read.csv("Cars_mileage.csv", header = T, sep = ",", na.strings = '?')
 
+# Remove incomplete variables (NA)
+df = na.omit(df)
+
 # Add variable for median mileage
 df$binary_median = NA
 
@@ -56,7 +59,7 @@ df$binary_median = sapply(1:length(df$mpg), function(x){
 # Reformat categorical variables
 catVar = c("cylinders", "year", "origin", "name", "binary_median")
 for(i in catVar){
-  df[,i] <- as.factor(df[,i])
+  df[,i] = as.factor(df[,i])
 }
 
 ### Pairs plot showing variable relationships
@@ -65,12 +68,12 @@ require(GGally)
 require(ggplot2)
 
 # Subset predictor variables to plot
-dfPlot <- subset(x = df, select = c("mpg", "displacement", "horsepower", "weight", "acceleration", "year", "binary_median"))
+dfPlot = subset(x = df, select = c("mpg", "displacement", "horsepower", "weight", "acceleration", "year", "binary_median"))
 ```
 ```{r, message=FALSE, warning=FALSE}
 # Produce plot
 png("Figures/Figure1_pairsPlot.png", width = 6.5, height = 5.5, units = 'in', res = 300)
-f1 <- ggpairs(dfPlot,
+f1 = ggpairs(dfPlot,
               mapping = ggplot2::aes(color = binary_median),
               upper = list(continuous = wrap("density", alpha = 0.5), combo = "box"),
               lower = list(continuous = wrap("points", alpha = 0.3), combo = wrap("dot", alpha = 0.4)),
@@ -85,4 +88,40 @@ dev.off()
 
 **(c)** Split the data into a training set and a test set.
 
+```{r}
+# Randomize dataset by assigning indices random numbers
+rand = runif(nrow(df))
+
+df = df[order(rand),]
+
+# Create test set from continuous predictor variables
+df_test = df[1:40, 3:6]
+
+# Create training set from continuous predictor variables
+df_train = df[41:nrow(df), 3:6]
+```
+
 **(d)** Perform two of the following in order to predict mpg_binary:
+*K-nearest neighbor analysis*
+
+```{r}
+# Load library
+require(class)
+
+# Create data frames for target variable (binary_median) prediction
+df_test_target = df[1:40, 10]
+df_train_target = df[41:nrow(df), 10]
+
+# Set k value
+k = floor(sqrt(nrow(df)))
+
+# Create model
+kmod = knn(train = df_train, test = df_test, cl = df_train_target, k = k)
+
+# Create table to visualize model results
+test <- table(df_test_target, kmod)
+```
+```{r, echo=FALSE, results='asis'}
+library(knitr)
+kable(test, caption = "K-nearest neighbor output", row.names = "Original ")
+```
