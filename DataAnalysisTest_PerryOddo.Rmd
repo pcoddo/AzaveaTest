@@ -133,7 +133,7 @@ table(df_test_target, knn_mod)
 
 # Create table to visualize model results
 ```
-|                   |                 |        KNN model prediction       |
+|                   |                 |        KNN model prediction|       |
 |------------------:|----------------:|:---------------:|-----------------|
 |                   |                 | 0: Below_median | 1: Above_median |
 | **Original Data** | 0: Below_median | **23**          | 1               |
@@ -174,7 +174,7 @@ table(df_test_target, cart_mod_test)
 
 # Create table to visualize model results
 ```
-|                   |                 |       CART model prediction       |
+|                   |                 |       CART model prediction|      |
 |------------------:|----------------:|:---------------:|-----------------|
 |                   |                 | 0: Below_median | 1: Above_median |
 | **Original Data** | 0: Below_median | **23**          | 1               |
