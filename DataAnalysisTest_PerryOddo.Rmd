@@ -80,6 +80,7 @@ f1 = ggpairs(df_Select,
 f1
 #dev.off()
 ```
+  
 ![Figure1](https://github.com/pcoddo/AzaveaTest/blob/master/Figures/Figure1_pairsPlot.png)
 
 *Figure 1 shows the pairwise, marginal density, and box-and-whisker plots for the selected predictor variables. I excluded categorical and nominal variables such as cylinders and names, and included vehicle year as a factor term. Because "binary_median" is a derivative of "mpg", it is not especially illustrative to include "mpg" as a predictive factor. I remove it from the variable list for further analysis.
@@ -87,9 +88,8 @@ f1
 ```{r}
 df_Select = df_Select[,2:ncol(df_Select)]
 ```  
-
-**(c)** Split the data into a training set and a test set.
-
+  
+**(c)** Split the data into a training set and a test set.  
 ```{r}
 # Randomize dataset by assigning indices random numbers
 set.seed(90210)
@@ -112,7 +112,7 @@ df_test = df_Select[1:40,]
 #df_train = df_Select_n[41:nrow(df),]
 df_train = df_Select[41:nrow(df),]
 ```
-
+  
 **(d)** Perform two of the following in order to predict mpg_binary:  
 
 1. *K-nearest neighbor analysis:*
@@ -139,7 +139,7 @@ table(df_test_target, knn_mod)
 | **Original Data** | 0: Below_median | **23**          | 1               |
 |                   | 1: Above_median | 0               | **16**          |  
 
-
+  
 2. *Decision Tree Analsis: CART*
 ```{r, message=F}
 # Load library
@@ -154,6 +154,7 @@ cart_mod <- rpart(binary_median ~., data = df_train, method = "class")
 rpart.plot(cart_mod, type = 3, digits = 3, fallen.leaves = TRUE)
 #dev.off()
 ```
+  
 ![Figure2](https://github.com/pcoddo/AzaveaTest/blob/master/Figures/Figure2_TreeA.png)
 *This looks wonky, let's try re-running the model by excluding the factor 'year' variable.  
 
@@ -166,6 +167,7 @@ cart_mod2 <- rpart(binary_median ~., data = df_train[c(1,2,3,4,6)])
 rpart.plot(cart_mod2, type = 3, digits = 3, fallen.leaves = TRUE)
 #dev.off()
 ```
+  
 ![Figure3](https://github.com/pcoddo/AzaveaTest/blob/master/Figures/Figure3_TreeB.png)  
 ```{r}
 # Predict test data based on trained model
