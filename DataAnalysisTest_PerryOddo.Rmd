@@ -13,7 +13,7 @@ R.Version: 3.3.3
 
 **(a)** A dataset contains data for 350 manufacturing companies in Europe. The following variables are included in the data for each company: industry, number of employees, salary of the CEO, and total profit. **We are interested in learning which variables impact the CEO's salary.**
 
-> *test response*
+> *Because the CEO's salary is a continuous variable, we would likely use a regression model. In this case, we are trying to infer the relationship between industry, number of employees, and total profit, and the CEO salary. For this scenario*
   
 **(b)** A market research company is hired to help a startup analyze their new product. **We want to know whether the product will be a success or failure.** Similar products exist on the market so the market research company gathers data on 31 similar products. The company records the following data points about each previously launched product: price of the product, competition price, marketing budget, ten other variables, and whether or not it succeeded or failed.
 
@@ -61,10 +61,11 @@ df$binary_median = sapply(1:length(df$mpg), function(x){
 
 **(b)** Which of the other variables seem most likely to be useful in predicting whether a car's mpg is above or below its median? **Describe your findings and submit visual representations of the relationship between mpg_binary and other variables.**
 
-```{r, message=FALSE, warning=FALSE}
+```{r, fig.width=8, fig.height=5.5, message=FALSE, warning=FALSE}
 
 # Reclassify discrete categorical variables
 cat_var = c("cylinders", "origin", "year", "name", "binary_median")
+
 for(i in cat_var){
   df[,i] = as.factor(df[,i])
 }
@@ -116,7 +117,7 @@ df_train = df_2[41:nrow(df),]
   
 **(d)** Perform two of the following in order to predict mpg_binary:  
 
-1. *K-nearest neighbor analysis:*
+1. *K-nearest neighbor Analysis:*
 ```{r, message=FALSE}
 
 # Load library
@@ -128,11 +129,8 @@ normalize = function(x){
   return((x - min(x)) / (max(x) - min(x)))
 }
 
-df_test_continuous = data.frame(sapply(df_test[,2:5], normalize), df_test$binary_median)
-df_train_continuous = data.frame(sapply(df_train[,2:5], normalize), df_train$binary_median)
-
-colnames(df_test_continuous)[5] = "binary_median"
-colnames(df_train_continuous)[5] = "binary_median"
+df_test_continuous = as.data.frame(sapply(df_test[,2:5], normalize))
+df_train_continuous = as.data.frame(sapply(df_train[,2:5], normalize))
 
 # Confirm new data structure
 print(summary(df_test_continuous))
@@ -157,12 +155,12 @@ table(df_test_target, knn_mod)
 |                   |                 |        KNN model prediction|       |
 |------------------:|----------------:|:---------------:|-----------------|
 |                   |                 | 0: Below_median | 1: Above_median |
-| **Original Data** | 0: Below_median | **24**          | 0               |
+| **Original Data** | 0: Below_median | **22**          | 2               |
 |                   | 1: Above_median | 0               | **16**          |  
 
   
-2. *Decision Tree Analsis: CART*
-```{r, message=F}
+2. *Decision Tree Analysis: CART*
+```{r, fig.width=4, fig.height=4, message=F}
 # Load library
 require(rpart)
 require(rpart.plot)
@@ -170,7 +168,7 @@ require(rpart.plot)
 # Specify target variable
 cart_mod <- rpart(binary_median ~., data = df_train, method = "class")
 
-# Plot model results
+### Plot model results
 #png("Figures/Figure2_TreeA.png", width = 4, height = 4, units = 'in', res = 300)
 rpart.plot(cart_mod, type = 3, digits = 3, fallen.leaves = TRUE)
 #dev.off()
@@ -179,11 +177,15 @@ rpart.plot(cart_mod, type = 3, digits = 3, fallen.leaves = TRUE)
 ![Figure2](https://github.com/pcoddo/AzaveaTest/blob/master/Figures/Figure2_TreeA.png)
 >*This looks wonky, let's try re-running the model by excluding the factor 'year' variable.*  
 
-```{r}
+```{r, fig.width=4, fig.height=4, message=F}
 # Re-run CART model to exclude categorical variables
+# Re-combine ontinuous training set with 'binary_median' variable 
+df_train_continuous = data.frame(sapply(df_train[,2:5], normalize), df_train$binary_median)
+colnames(df_train_continuous)[5] = "binary_median"
+
 cart_mod2 <- rpart(binary_median ~., data = df_train_continuous)
 
-# Plot new results
+### Plot new results
 #png("Figures/Figure3_TreeB.png", width = 4, height = 4, units = 'in', res = 300)
 rpart.plot(cart_mod2, type = 3, digits = 3, fallen.leaves = TRUE)
 #dev.off()
