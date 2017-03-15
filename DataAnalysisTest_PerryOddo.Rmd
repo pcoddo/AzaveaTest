@@ -31,7 +31,6 @@ R.Version: 3.3.3
 **(a)** Create a binary variable that represents whether the car's mpg is above or below its median. Above the median should be represented as 1. Name this variable **mpg_binary.**  
 
 ```{r, warning = FALSE, message = FALSE}
-
 # Clear all variables
 rm(list = ls())
 graphics.off()
@@ -68,7 +67,6 @@ df$binary_median = sapply(1:length(df$mpg), function(x){
 *To get a better sense of the broad relationships between the variables in the dataset, I'll first look at a pairwise plot which shows each variable plotted against each other.*  
 
 ```{r, fig.width=8, fig.height=5.5, message=FALSE, warning=FALSE}
-
 # Reclassify discrete categorical variables as factor
 cat_var = c("cylinders", "origin", "year", "name", "binary_median")
 
@@ -111,7 +109,6 @@ f1
 *Figure 1 shows the pairwise, marginal density, and box-and-whisker plots for the selected predictor variables. Here, the colors show the split between observations that fell above and below the median mpg for the group (blue and red, respectively). This is a lot of information, but it can tell us a great deal about which variables are likely to affect the target "mpg_binary". It is important to remember that "mpg_binary" is derived directly from "mpg": everything above 22.75 is split into 1, everything below into 0. Looking more closely at the plots between mpg and the other continuous variables could better illustrate their relationship.*
 
 ```{r, warning=FALSE, message=FALSE}
-
 # Load library
 require(tidyr)
 
@@ -159,7 +156,6 @@ f3
 *Moving on to the categorical variables, the number of cylinders doesn't immediately appear to have a clear influence on "mpg", and therefore it is unclear how it will affect "mpg_binary."*  
 
 ```{r, message = FALSE, warning = FALSE}
-
 # Categorical relationships
 #png("Figures/Figure4_mpgPlots_categorical.png", width = 6.5, height = 4.5, units = 'in', res = 300)
 f4 = df[,c("mpg", "cylinders", "year", "binary_median")] %>%
@@ -178,7 +174,6 @@ f4
 *It is noticeable that the majority of the "cylinder" data is aggregated within the 4, 6, and 8 levels (385/392 observations). Focusing on just the even-numbered cylinders, it appears that fuel economy generally decreases as cylinders are added. The model year information appears to show a gradual increasing trend in "mpg" through time, and the proportion of models with fuel economies over the median also increases.*  
 
 ```{r, message = FALSE}
-
 # Find proporiton of cars with median-exceeding fuel economies for each year
 proportion = vector("integer")
 
@@ -218,7 +213,6 @@ df = df[,2:ncol(df)]
 **(c)** Split the data into a training set and a test set.
 
 ```{r}
-
 # Randomize dataset by assigning indices random numbers
 set.seed(90210)
 rand = runif(nrow(df))
@@ -252,7 +246,6 @@ print(summary(df_train_continuous))
 ```
 
 ```{r}
-
 # Create data frames for target variable (binary_median) prediction
 df_test_target = df[1:40, "binary_median"]
 df_train_target = df[41:nrow(df), "binary_median"]
@@ -305,17 +298,16 @@ rpart.plot(tree_mod2, type = 3, digits = 3, fallen.leaves = TRUE)
 #dev.off()
 ```
   
-![Figure3](https://github.com/pcoddo/AzaveaTest/blob/master/Figures/Figure6_TreeB.png)  
+![Figure6](https://github.com/pcoddo/AzaveaTest/blob/master/Figures/Figure6_TreeB.png)  
 
 ```{r}
-
 # Predict test data based on trained model
 tree_mod_test <- predict(tree_mod2, df_test_continuous, type = "class")
 table(df_test_target, tree_mod_test)
 
 # Create table to visualize model results
 ```
-|                   |                 | **Decision Tree model prediction**|
+|                   |                 | **Decision Tree model prediction**||
 |------------------:|----------------:|:---------------:|-----------------|
 |                   |                 | 0: Below_median | 1: Above_median |
 | **Original Data** | 0: Below_median | **22**          | 2               |
