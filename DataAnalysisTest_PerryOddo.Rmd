@@ -2,7 +2,6 @@
 author: "Perry Oddo"
 date: "March 12, 2017"
 output: html_document
-R.Version: 3.3.3
 ---
 ***
 #Data Analysis Test
@@ -156,7 +155,7 @@ f3
 |   Horsepower |        0.6059 |        0.6892 |
 |       Weight |         0.626 |        0.7668 |
   
-*Moving on to the categorical variables, the number of cylinders doesn't immediately appear to have a clear influence on "mpg", and therefore it is unclear how it will affect "mpg_binary" (Figure 4)*  
+*Moving on to the categorical variables, the number of cylinders doesn't immediately appear to have a clear influence on "mpg", and therefore it is unclear how it will affect "mpg_binary" (Figure 4).*  
 
 ```{r, message = FALSE, warning = FALSE}
 # Categorical relationships
@@ -194,8 +193,7 @@ for(i in levels(df$year)){
 
 *This table illustrates something that wasn't as obvious in the previous scatterplot: a marked increase in the proportion of vehicle models exceeding the group median between 1979 and 1980 (from 55.2% to 96.3%). Some quick research suggests this increase may be correlated with the [Corporate Average Fuel Economy](https://en.wikipedia.org/wiki/Corporate_Average_Fuel_Economy#History) standards which were introduced in 1978, or as a response to the [1979 Energy Crisis](https://en.wikipedia.org/wiki/1979_energy_crisis), but that is more of an interesting aside. The causation behind these trends would have to be the subject of another exercise.*  
 
-*Returning to the question of which variables are likely to predict whether a car's mpg will be above the group median. It seems likely that, due to their strong coefficients of determination, "displacement", "weight," and "horsepower" are good choices for continuous predictor variables. For categorical variables, "year" may also work, although the fact that it has 13 levels may limit its use. In that case, "cylinders" may prove to be more instructive, particularly if focusing on the even-numbered cylinders.*
-  
+*Returning to the question of which variables are likely to predict whether a car's mpg will be above the group median. It seems likely that, due to their strong coefficients of determination, "displacement", "weight," and "horsepower" are good choices for continuous predictor variables. For categorical variables, "year" may also work, although the fact that it has 13 levels may limit its use. In that case, "cylinders" may prove to be more instructive, particularly if focusing on the even-numbered cylinders.*  
   
 **(c)** Split the data into a training set and a test set.
   
