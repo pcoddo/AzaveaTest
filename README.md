@@ -11,7 +11,7 @@ R version: 3.3.3
 Required packages:
 * rmarkdown
 * GGally
-* ggoplot2
+* ggplot2
 * tidyr
 * class
 * rpart
