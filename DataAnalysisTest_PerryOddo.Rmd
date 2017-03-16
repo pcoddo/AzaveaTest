@@ -273,7 +273,7 @@ rpart.plot(tree_mod, type = 3, digits = 3, fallen.leaves = TRUE)
   
 ![Figure5](https://github.com/pcoddo/AzaveaTest/blob/master/Figures/Figure5_TreeA.png)
 
->*This decision tree implementation is also very simple. Figure 5 shows a visual representation of how the model finds ways to split up the data. It is interesting to note that the categorical variables, "year" and "cylinders" produced the initial branches. As anticipated, the cylinder split came at the division between low numbers of cylinders (4) vs. high numbers of cylinders (6 and 8). It doesn't appear as though the "year" variable is very effective at slicing the data, despite it's early branch. A look at the model's variable importance rank confirms this:*
+*This decision tree implementation is also very simple. Figure 5 shows a visual representation of how the model finds ways to split up the data. It is interesting to note that the categorical variables, "year" and "cylinders" produced the initial branches. As anticipated, the cylinder split came at the division between low numbers of cylinders (4) vs. high numbers of cylinders (6 and 8). It doesn't appear as though the "year" variable is very effective at slicing the data, despite it's early branch. A look at the model's variable importance rank confirms this:*
 
 ```{r, message = FALSE}
 # Print most important variabes
