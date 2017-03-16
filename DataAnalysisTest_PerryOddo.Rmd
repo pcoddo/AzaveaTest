@@ -341,6 +341,9 @@ tree_mod3 <- rpart(mpg_binary ~., data = df_train, method = "class")
 ### Plot model results
 rpart.plot(tree_mod3, type = 3, digits = 3, fallen.leaves = TRUE)
 
+# Print most important variabes
+print(tree_mod3$variable.importance)
+
 # Predict based on model with all variables included
 tree_mod_test3 <- predict(tree_mod3, df_test, type = "class")
 #table(df_test_target, tree_mod_test3)
