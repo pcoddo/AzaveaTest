@@ -7,7 +7,7 @@ My written responses are  in *italics*, and the code used to generate the analys
 This code should be able to run directly through Rstudio, but please let me know if you have issues running it.
 And feel free to contact me with any questions or comments about this submission. 
 
-R version: 3.3.3
+R version: 3.3.3  
 Required packages:
 * rmarkdown
 * GGally
