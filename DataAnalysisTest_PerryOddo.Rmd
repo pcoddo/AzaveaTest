@@ -197,7 +197,7 @@ for(i in levels(df$year)){
   
 **(c)** Split the data into a training set and a test set.
   
-*I suspect that including "mpg" in the forthcoming analyses will cause the models to exclude the impacts of other variables, due to the fact that "mpg_binary" is a direct derivative. If would be trivial to determine if a car will have a fuel economy higher than the median if you already know its mpg, so I choose to remove it from the data frame. I will return to this assumption later to test its validity.*
+*Including "mpg" in the forthcoming analyses will likely cause the models to exclude the impacts of other variables, due to the fact that "mpg_binary" is a direct derivative. If would be trivial to determine if a car will have a fuel economy higher than the median if you already know its mpg, so I choose to remove it from the data frame. I will return to this assumption later to test its validity.*
 
 ```{r}
 # Remove mpg variable from data frame
@@ -323,7 +323,7 @@ tree_mod_test2 <- predict(tree_mod2, df_test_continuous, type = "class")
   
 *The results of the Decision Tree analysis are summarized in the table above. Our refined model correctly predicted the "mpg_binary" status of 39/40 test observations. The single misclassification results in a test error of 2.5%.*
 
-*As I previously mentioned, I excluded the "mpg" variable from this analysis because I expected the classifying models to focus too much at the expense of the other predictor variables. Out of curiousity, I try plotting producing a tree with the original "mpg" variable included to see if it was, in fact, a useful predictor of "mpg_binary."*
+*As I previously mentioned, I excluded the "mpg" variable from this analysis because I expected the classifying models to focus too much at the expense of the other predictor variables. Out of curiousity, I try plotting producing a tree with the original "mpg" variable included to see how the "mpg_binary" predictions would have differed.*
 
 ```{r, message = FALSE}
 # Randomize original dataset by assigning indices random numbers
@@ -356,5 +356,5 @@ tree_mod_test3 <- predict(tree_mod3, df_test, type = "class")
 |   **Target Data** | 0: Below_median | **24**          | 0               |
 |                   | 1: Above_median | 0               | **16**          |  
 
-*Perhaps unsurprisingly, the decision tree model found perfect fidelity when classifying observations' "binary_mpg" based on just the "mpg" variable (Figure 7, table). This exercise demonstrates how even simple models can be very useful in predicting behavior in unknown data, and illustrates the importance of performing multiple analyses to achieve the best fit.*  
+*As expected, the decision tree model found perfect fidelity when classifying observations' "binary_mpg" based on just the "mpg" variable (Figure 7, table). This exercise demonstrates how even simple models can be very useful in predicting behavior in unknown data, but also illustrates the importance of performing multiple analyses to achieve the best fit.*  
 
