@@ -248,7 +248,7 @@ knn_mod = knn(train = df_train_continuous, test = df_test_continuous, cl = df_tr
 # Create table to visualize model results
 # table(df_test_target, knn_mod)
 ```
-|                   |                 |        KNN model prediction|      |
+|                   |                 |        **KNN model prediction**|      |
 |------------------:|----------------:|:---------------:|-----------------|
 |                   |                 | 0: Below_median | 1: Above_median |
 |   **Target Data** | 0: Below_median | **22**          | 2               |
@@ -317,13 +317,12 @@ tree_mod_test2 <- predict(tree_mod2, df_test_continuous, type = "class")
 # Create table to visualize model results
 # table(df_test_target, tree_mod_test2)
 ```
-|                   |                 | **Decision Tree model prediction**||
+|                   |                 |        **Decision Tree model prediction**|      |
 |------------------:|----------------:|:---------------:|-----------------|
 |                   |                 | 0: Below_median | 1: Above_median |
 |   **Target Data** | 0: Below_median | **23**          | 1               |
 |                   | 1: Above_median | 0               | **16**          |  
-
-
+  
 *The results of the Decision Tree analysis are summarized in the table above. Our refined model correctly predicted the "mpg_binary" status of 39/40 test observations. The single misclassification results in a test error of 2.5%.*
 
 *As I previously mentioned, I excluded the "mpg" variable from this analysis because I expected the classifying models to focus too much at the expense of the other predictor variables. Out of curiousity, I try plotting producing a tree with the original "mpg" variable included to see if it was, in fact, a useful predictor of "mpg_binary."*
@@ -351,7 +350,7 @@ tree_mod_test3 <- predict(tree_mod3, df_test, type = "class")
 ```
 ![Figure7](https://github.com/pcoddo/AzaveaTest/blob/master/Figures/Figure7_TreeC_allVars.png)  
   
-|                   |                 | **Decision Tree model prediction**||
+|                   |                 |        **Decision Tree model prediction**|      |
 |------------------:|----------------:|:---------------:|-----------------|
 |                   |                 | 0: Below_median | 1: Above_median |
 |   **Target Data** | 0: Below_median | **24**          | 0               |
