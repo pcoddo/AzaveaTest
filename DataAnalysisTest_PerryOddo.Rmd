@@ -5,9 +5,8 @@ last updated: "March 15, 2017"
 output: html_document
 R-version: 3.3.3
 ---
-
-# Data Analysis Test
 ***
+# Data Analysis Test
 
 ## Part 1: Conceptual Question
 **This first question is conceptual and written responses are expected. For each item below, indicate whether the appropriate method would be classification or regression, and whether we are most interested in inference or prediction. Please include a written sentence or two explaining why you made this choice. Also, indidate what n and p are for each section.**  
@@ -95,7 +94,6 @@ df = subset(x = df, select = c("mpg", "cylinders", "displacement", "horsepower",
                                "acceleration", "year", "mpg_binary"))
 
 # Produce pairs plot
-#png("Figures/Figure1_pairsPlot.png", width = 8, height = 5.5, units = 'in', res = 300)
 f1 = ggpairs(df,
               mapping = ggplot2::aes(color = mpg_binary),
               upper = list(continuous = wrap("density", alpha = 0.5)),
@@ -118,7 +116,6 @@ f1
 require(tidyr)
 
 # Plot mpg against other continuous variables
-#png("Figures/Figure2_mpgPlots.png", width = 6.5, height = 4.5, units = 'in', res = 300)
 f2 = df[ ,c("mpg", "displacement", "horsepower", "weight", "acceleration", "mpg_binary")] %>%
   gather(-mpg, -mpg_binary, key = "var", value = value) %>% 
   ggplot(aes(x = value, y = mpg)) +
@@ -134,7 +131,6 @@ f2
 *Here we can see more clearly that as a car's fuel economy decreases as "displacement", "horsepower", and "weight" increase. These trends appear to show a strong correlation, as indicated by the close fit to the linear regression in dark blue. The opposite trend is true for "acceleration", which shows a positive relationship with mpg, though not as strong. Because some of the panels appear slighly nonlinear, I log-transform the y-axis to see if it produces a better fit:*  
 
 ```{r, message = FALSE, echo = FALSE}
-#png("Figures/Figure3_mpgPlots_log.png", width = 6.5, height = 4.5, units = 'in', res = 300)
 f3 = df[ ,c("mpg", "displacement", "horsepower", "weight", "acceleration", "mpg_binary")] %>%
   gather(-mpg, -mpg_binary, key = "var", value = value) %>% 
   ggplot(aes(x = value, y = log10(mpg))) +
@@ -160,7 +156,6 @@ f3
 
 ```{r, message = FALSE, warning = FALSE}
 # Categorical relationships
-#png("Figures/Figure4_mpgPlots_categorical.png", width = 6.5, height = 4.5, units = 'in', res = 300)
 f4 = df[ ,c("mpg", "cylinders", "year", "mpg_binary")] %>%
   gather(-mpg, -mpg_binary, key = "var", value = value) %>% 
   ggplot(aes(x = value, y = mpg)) +
@@ -218,7 +213,6 @@ df_train = df[41:nrow(df), ]
 **(d)** Perform two of the following in order to predict mpg_binary:  
 1. *K-nearest neighbor Analysis:*
 ```{r, message=FALSE}
-
 # Load library
 require(class)
 
@@ -268,7 +262,6 @@ require(rpart.plot)
 tree_mod <- rpart(mpg_binary ~., data = df_train, method = "class")
 
 ### Plot model results
-#png("Figures/Figure5_TreeA.png", width = 4, height = 4, units = 'in', res = 300)
 rpart.plot(tree_mod, type = 3, digits = 3, fallen.leaves = TRUE)
 ```
   
@@ -295,7 +288,6 @@ colnames(df_train_continuous)[5] = "mpg_binary"
 tree_mod2 <- rpart(mpg_binary ~., data = df_train_continuous)
 
 ### Plot new results
-#png("Figures/Figure6_TreeB.png", width = 4, height = 4, units = 'in', res = 300)
 rpart.plot(tree_mod2, type = 3, digits = 3, fallen.leaves = TRUE)
 ```
   
@@ -341,7 +333,6 @@ df_train = df_all[41:nrow(df), ]
 tree_mod3 <- rpart(mpg_binary ~., data = df_train, method = "class")
 
 ### Plot model results
-#png("Figures/Figure7_TreeC_allVars.png", width = 4, height = 4, units = 'in', res = 300)
 rpart.plot(tree_mod3, type = 3, digits = 3, fallen.leaves = TRUE)
 
 # Predict based on model with all variables included
