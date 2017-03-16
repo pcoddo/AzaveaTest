@@ -17,6 +17,7 @@ Required packages:
 * rpart.plot
 
 Thank you for this opportunity,  
-Perry  
-[email](mailto:pcoddo@gmail.com)
+Perry
+
+[email](mailto:pcoddo@gmail.com)  
 [LinkedIn](https://www.linkedin.com/in/perryoddo/)
