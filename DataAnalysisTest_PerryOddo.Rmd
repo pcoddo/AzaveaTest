@@ -102,6 +102,7 @@ f1 = ggpairs(df,
               title = "Figure 1. Vehicle variable pairs plot",
               legend = c(1,1)) +
               theme(legend.position = "right")
+
 f1
 ```
   
@@ -124,6 +125,7 @@ f2 = df[ ,c("mpg", "displacement", "horsepower", "weight", "acceleration", "mpg_
     geom_smooth(method = "lm") + 
     theme_bw() +
   ggtitle("Figure 2. MPG Plots - Continuous variables")
+
 f2
 ```
 ![Figure2](https://github.com/pcoddo/AzaveaTest/blob/master/Figures/Figure2_mpgPlots.png)
@@ -139,6 +141,7 @@ f3 = df[ ,c("mpg", "displacement", "horsepower", "weight", "acceleration", "mpg_
     geom_smooth(method = "lm") + 
     theme_bw() +
   ggtitle("Figure 3. MPG Plots - Log scale")
+
 f3
 ```
 ![Figure3](https://github.com/pcoddo/AzaveaTest/blob/master/Figures/Figure3_mpgPlots_log.png)  
@@ -164,6 +167,7 @@ f4 = df[ ,c("mpg", "cylinders", "year", "mpg_binary")] %>%
     geom_smooth(method = "lm") + 
     theme_bw() +
   ggtitle("Figure 4. MPG Plots - Categorical variables")
+
 f4
 ```
 ![Figure4](https://github.com/pcoddo/AzaveaTest/blob/master/Figures/Figure4_mpgPlots_categorical.png)  
@@ -242,12 +246,14 @@ knn_mod = knn(train = df_train_continuous, test = df_test_continuous, cl = df_tr
 # Create table to visualize model results
 # table(df_test_target, knn_mod)
 ```
+
 |                   |                 |        **KNN model prediction**|      |
 |------------------:|----------------:|:---------------:|-----------------|
 |                   |                 | 0: Below_median | 1: Above_median |
 |   **Target Data** | 0: Below_median | **22**          | 2               |
 |                   | 1: Above_median | 0               | **16**          |  
   
+
 *The results of the K-nearest neighbor analysis are summarized in the table above. The results in bold show the instances where the KNN model prediction matched the target data from the original data set. That is, the model correctly predicted the "binary_mpg" of 38/40 test vehicles. There were two incorrect guesses (top right quadrant) which gives an overall model error of 5%.*
 
 *This is a very simple implementation but illustrates how a few lines of code can produce very accurate predictions given a set of quality indicators. The Knn method only works for variables of the same data type, in this case continuous. Further tests could investigate the effect of choosing different k variables.*
