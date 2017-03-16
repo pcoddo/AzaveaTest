@@ -1,6 +1,5 @@
 ---
 author: "Perry Oddo"
-email: pcoddo@gmail.com
 date: "March 12, 2017"
 output: html_document
 R.Version: 3.3.3
@@ -11,18 +10,19 @@ R.Version: 3.3.3
 ## Part 1: Conceptual Question
 **This first question is conceptual and written responses are expected. For each item below, indicate whether the appropriate method would be classification or regression, and whether we are most interested in inference or prediction. Please include a written sentence or two explaining why you made this choice. Also, indidate what n and p are for each section.**  
 
-
 **(a)** A dataset contains data for 350 manufacturing companies in Europe. The following variables are included in the data for each company: industry, number of employees, salary of the CEO, and total profit. **We are interested in learning which variables impact the CEO's salary.**
 
-*Because the CEO's salary is a continuous variable, we would use a regression model. In this case, we are trying to infer the relationship between industry, number of employees, and total profit variables, and the CEO salary. For this scenario*
+*Because the CEO's salary is a continuous variable, we would use a regression model. In this case, we are trying to infer the relationship between industry, number of employees, and total profit variables, and the CEO salary. For this scenario, we would have a sample size of n = 350, with p = 4 predictor variables.*
   
+    
 **(b)** A market research company is hired to help a startup analyze their new product. **We want to know whether the product will be a success or failure.** Similar products exist on the market so the market research company gathers data on 31 similar products. The company records the following data points about each previously launched product: price of the product, competition price, marketing budget, ten other variables, and whether or not it succeeded or failed.
 
-*Our target variable here is a binary outcome: whether or not the product will be a success or failture. Because this is a discrete variable, we would use a classification model. And because we're interested in the product's future success, and not simply understanding the relationship between the model inputs, we would be looking for a prediction. In this scenario*
-
+*Our target variable here is a binary outcome: whether or not the product will be a success or failture. Because this is a discrete variable, we would use a classification model. And because we're interested in the product's future success, and not simply understanding the relationship between the model inputs, we would be looking for a prediction. In this scenario, our sample size is n = 31, and we have p = 14 predictor variables.*
+   
+   
 **(c)** Every week data is collected for the world stock market in 2012. The data points collected include the % change in the dollar, the % change in the market in the United States, the % change in the market in China, and the % change in the market in France. **We are interested in predicting the % change in the dollar in relation to the changes every week in the world stock markets.**
 
-*Our target variable in this case is the percent change of the USD relative to its baseline value (performance from previous week). This variable could be modeled as continuous, leading us to use a regression.*
+*Our target variable in this case is the percent change of the USD relative to its baseline value (performance from previous week). Unlike regular percents, this percent change variable could be modeled as continuous, leading us to use a regression. In this case, we are interested in making a prediction about the markets. If we have data points for every week of the year 2012, we would have n = 52 data points, with p = 4 predictor variables.*
 
 ***
 ## Part 2: Applied Question
@@ -35,7 +35,7 @@ R.Version: 3.3.3
 rm(list = ls())
 graphics.off()
 
-# Read read mileage data and remove incomplete variables (NA)
+# Read read mileage data and remove incomplete entries (NA)
 df = read.csv("Cars_mileage.csv", 
               header = T, 
               sep = ",", 
@@ -44,10 +44,10 @@ df = read.csv("Cars_mileage.csv",
 df = na.omit(df)
 
 # Add variable for median mileage
-df$binary_median = NA
+df$mpg_binary = NA
 
 # Apply binary classification
-df$binary_median = sapply(1:length(df$mpg), function(x){
+df$mpg_binary = sapply(1:length(df$mpg), function(x){
   
   if(df$mpg[x] >= median(df$mpg)){
     return(1)
@@ -58,28 +58,31 @@ df$binary_median = sapply(1:length(df$mpg), function(x){
   }
   
 })
-
 ```
   
-
+  
 **(b)** Which of the other variables seem most likely to be useful in predicting whether a car's mpg is above or below its median? **Describe your findings and submit visual representations of the relationship between mpg_binary and other variables.**  
 
 *To get a better sense of the broad relationships between the variables in the dataset, I'll first look at a pairwise plot which shows each variable plotted against each other.*  
 
-```{r, fig.width=8, fig.height=5.5, message=FALSE, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
+### Ensure data is properly formatted
 # Reclassify discrete categorical variables as factor
-cat_var = c("cylinders", "origin", "year", "name", "binary_median")
+cat_var = c("cylinders", "origin", "year", "name", "mpg_binary")
 
 for(i in cat_var){
-  df[,i] = as.factor(df[,i])
+  df[ ,i] = as.factor(df[ ,i])
 }
 
 # Reclassify continuous variables as numeric
-num_var = c("mpg", "horsepower", "weight")
+num_var = c("displacement", "horsepower", "weight", "acceleration")
 
 for(i in num_var){
-  df[,i] = as.numeric(df[,i])
+  df[ ,i] = as.numeric(df[ ,i])
 }
+
+# Check data structure
+print(str(df))
 
 ### Visualize variable relationships
 # Load required packages
@@ -88,12 +91,13 @@ require(ggplot2)
 
 # Subset predictor variables to plot and save as new data frame
 df_original = df
-df = subset(x = df, select = c("mpg", "cylinders", "displacement", "horsepower", "weight", "acceleration", "year", "binary_median"))
+df = subset(x = df, select = c("mpg", "cylinders", "displacement", "horsepower", "weight", 
+                               "acceleration", "year", "mpg_binary"))
 
 # Produce pairs plot
-#png("Figures/Figure1_pairsPlot2.png", width = 8, height = 5.5, units = 'in', res = 300)
+#png("Figures/Figure1_pairsPlot.png", width = 8, height = 5.5, units = 'in', res = 300)
 f1 = ggpairs(df,
-              mapping = ggplot2::aes(color = binary_median),
+              mapping = ggplot2::aes(color = mpg_binary),
               upper = list(continuous = wrap("density", alpha = 0.5)),
               lower = list(continuous = wrap("points", alpha = 0.3), combo = wrap("dot", alpha = 0.4)),
               diag = list(continuous = wrap("densityDiag", alpha = 0.5)),
@@ -101,12 +105,13 @@ f1 = ggpairs(df,
               legend = c(1,1)) +
               theme(legend.position = "right")
 f1
-#dev.off()
 ```
   
 ![Figure1](https://github.com/pcoddo/AzaveaTest/blob/master/Figures/Figure1_pairsPlot.png)
 
-*Figure 1 shows the pairwise, marginal density, and box-and-whisker plots for the selected predictor variables. Here, the colors show the split between observations that fell above and below the median mpg for the group (blue and red, respectively). This is a lot of information, but it can tell us a great deal about which variables are likely to affect the target "mpg_binary". It is important to remember that "mpg_binary" is derived directly from "mpg": everything above 22.75 is split into 1, everything below into 0. Looking more closely at the plots between mpg and the other continuous variables could better illustrate their relationship.*
+*I exlude "name" because there are too many strings to make sense of, and "origin" because I cannot find any documentation on its meaning and there are a number of other useful variables to plot.*  
+
+*Figure 1 shows the pairwise, marginal density, and box-and-whisker plots for the selected predictor variables. Here, the colors show the split between observations that fell above and below the median mpg for the group (blue and red, respectively). This is a lot of information, but it can tell us a great deal about which variables are likely to affect the target "mpg_binary". It is important to remember that "mpg_binary" is derived directly from "mpg": everything above 22.75 is split into 1, everything below into 0. Looking more closely at the plots between mpg and the other variables could better illustrate their relationship (Figure 2).*
 
 ```{r, warning=FALSE, message=FALSE}
 # Load library
@@ -114,37 +119,35 @@ require(tidyr)
 
 # Plot mpg against other continuous variables
 #png("Figures/Figure2_mpgPlots.png", width = 6.5, height = 4.5, units = 'in', res = 300)
-f2 = df[,c("mpg", "displacement", "horsepower", "weight", "acceleration", "binary_median")] %>%
-  gather(-mpg, -binary_median, key = "var", value = value) %>% 
+f2 = df[ ,c("mpg", "displacement", "horsepower", "weight", "acceleration", "mpg_binary")] %>%
+  gather(-mpg, -mpg_binary, key = "var", value = value) %>% 
   ggplot(aes(x = value, y = mpg)) +
-    geom_point(aes(color = binary_median)) +
+    geom_point(aes(color = mpg_binary)) +
     facet_wrap(~var, scales = "free", nrow = 2) +
     geom_smooth(method = "lm") + 
     theme_bw() +
   ggtitle("Figure 2. MPG Plots - Continuous variables")
 f2
-#dev.off()
 ```
 ![Figure2](https://github.com/pcoddo/AzaveaTest/blob/master/Figures/Figure2_mpgPlots.png)
   
-*Here we can see more clearly that a car's fuel economy decreases as "displacement", "horsepower", and "weight" increase. These trends appear to show a strong correlation, as indicated by the close fit to the linear regression in dark blue. The opposite trend is true for "acceleration", which shows a positive relationship with mpg, though not as strong. Because some of the panels appear slighly nonlinear, I log-transform the y-axis to see if it produces a better fit:*  
+*Here we can see more clearly that as a car's fuel economy decreases as "displacement", "horsepower", and "weight" increase. These trends appear to show a strong correlation, as indicated by the close fit to the linear regression in dark blue. The opposite trend is true for "acceleration", which shows a positive relationship with mpg, though not as strong. Because some of the panels appear slighly nonlinear, I log-transform the y-axis to see if it produces a better fit:*  
 
 ```{r, message = FALSE, echo = FALSE}
 #png("Figures/Figure3_mpgPlots_log.png", width = 6.5, height = 4.5, units = 'in', res = 300)
-f3 = df[,c("mpg", "displacement", "horsepower", "weight", "acceleration", "binary_median")] %>%
-  gather(-mpg, -binary_median, key = "var", value = value) %>% 
+f3 = df[ ,c("mpg", "displacement", "horsepower", "weight", "acceleration", "mpg_binary")] %>%
+  gather(-mpg, -mpg_binary, key = "var", value = value) %>% 
   ggplot(aes(x = value, y = log10(mpg))) +
-    geom_point(aes(color = binary_median)) +
+    geom_point(aes(color = mpg_binary)) +
     facet_wrap(~var, scales = "free", nrow = 2) +
     geom_smooth(method = "lm") + 
     theme_bw() +
   ggtitle("Figure 3. MPG Plots - Log scale")
 f3
-#dev.off()
 ```
 ![Figure3](https://github.com/pcoddo/AzaveaTest/blob/master/Figures/Figure3_mpgPlots_log.png)  
 
-*The following table summarizes the R^2^ values for the linear and transformed relationships. Transforming "mpg" improves the data fit for all four variables:*  
+*The following table summarizes the R^2^ values for the linear and transformed relationships seen in Figures 2 and 3. Transforming "mpg" improves the data fit for all four variables:*  
 
 |              | R^2^ - Linear | R^2^ - Log(Y) |
 |-------------:|--------------:|--------------:|
@@ -153,21 +156,20 @@ f3
 |   Horsepower |        0.6059 |        0.6892 |
 |       Weight |         0.626 |        0.7668 |
   
-*Moving on to the categorical variables, the number of cylinders doesn't immediately appear to have a clear influence on "mpg", and therefore it is unclear how it will affect "mpg_binary."*  
+*Moving on to the categorical variables, the number of cylinders doesn't immediately appear to have a clear influence on "mpg", and therefore it is unclear how it will affect "mpg_binary" (Figure 4)*  
 
 ```{r, message = FALSE, warning = FALSE}
 # Categorical relationships
 #png("Figures/Figure4_mpgPlots_categorical.png", width = 6.5, height = 4.5, units = 'in', res = 300)
-f4 = df[,c("mpg", "cylinders", "year", "binary_median")] %>%
-  gather(-mpg, -binary_median, key = "var", value = value) %>% 
+f4 = df[ ,c("mpg", "cylinders", "year", "mpg_binary")] %>%
+  gather(-mpg, -mpg_binary, key = "var", value = value) %>% 
   ggplot(aes(x = value, y = mpg)) +
-    geom_point(aes(color = binary_median)) +
+    geom_point(aes(color = mpg_binary)) +
     facet_wrap(~var, scales = "free", nrow = 2) +
     geom_smooth(method = "lm") + 
     theme_bw() +
   ggtitle("Figure 4. MPG Plots - Categorical variables")
 f4
-#dev.off()
 ```
 ![Figure4](https://github.com/pcoddo/AzaveaTest/blob/master/Figures/Figure4_mpgPlots_categorical.png)  
 
@@ -178,7 +180,7 @@ f4
 proportion = vector("integer")
 
 for(i in levels(df$year)){
-  above = which(df$binary_median == 1)
+  above = which(df$mpg_binary == 1)
   proportion[i] = length((which(df$year[above] == i))) /
                   length((which(df$year == i))) * 100
 }
@@ -192,123 +194,169 @@ for(i in levels(df$year)){
 
 *This table illustrates something that wasn't as obvious in the previous scatterplot: a marked increase in the proportion of vehicle models exceeding the group median between 1979 and 1980 (from 55.2% to 96.3%). Some quick research suggests this increase may be correlated with the [Corporate Average Fuel Economy](https://en.wikipedia.org/wiki/Corporate_Average_Fuel_Economy#History) standards which were introduced in 1978, or as a response to the [1979 Energy Crisis](https://en.wikipedia.org/wiki/1979_energy_crisis), but that is more of an interesting aside. The causation behind these trends would have to be the subject of another exercise.*  
 
-*Returning to the question of which variables are likely to predict whether a car's mpg will be above the group median. It seems likely that, due to their strong coefficients of determination, "displacement", "weight" and "horsepower" are good choices for continuous predictor variables. For categorical variables, "year" may also work, although the fact that it has 13 levels may limit its use. In that case, "cylinders" may prove to be more instructive, particularly if focusing on the even-numbered cylinders.*
-
-```{r}
-# f5 = df[,c("displacement", "horsepower", "weight", "acceleration", "binary_median")] %>%
-#   gather(-binary_median, key = "var", value = value) %>% 
-#   ggplot(aes(x = binary_median, y = value)) +
-#     geom_boxplot(aes(fill = binary_median)) +
-#     stat_summary(fun.y = mean, fill = "white", geom ="point", 
-#                shape = 23, size = 3) + 
-#     facet_wrap(~var, scales = "free", nrow = 2) 
-# f5
-```
+*Returning to the question of which variables are likely to predict whether a car's mpg will be above the group median. It seems likely that, due to their strong coefficients of determination, "displacement", "weight," and "horsepower" are good choices for continuous predictor variables. For categorical variables, "year" may also work, although the fact that it has 13 levels may limit its use. In that case, "cylinders" may prove to be more instructive, particularly if focusing on the even-numbered cylinders.*
+  
+  
+**(c)** Split the data into a training set and a test set.
+  
+*I suspect that including "mpg" in the forthcoming analyses will cause the models to exclude the impacts of other variables, due to the fact that "mpg_binary" is a direct derivative. If would be trivial to determine if a car will have a fuel economy higher than the median if you already know its mpg, so I choose to remove it from the data frame. I will return to this assumption later to test its validity.*
 
 ```{r}
 # Remove mpg variable from data frame
-df = df[,2:ncol(df)]
-```  
-  
-**(c)** Split the data into a training set and a test set.
+df = df[ ,2:ncol(df)]
 
-```{r}
 # Randomize dataset by assigning indices random numbers
 set.seed(90210)
 rand = runif(nrow(df))
-df = df[order(rand),]
+df = df[order(rand), ]
 
-# Create test (n = 40) and training sets from data frame 
-df_test = df[1:40,]
-df_train = df[41:nrow(df),]
+# Create test (n = 40) and training (n = 352) sets from data frame 
+df_test = df[1:40, ]
+df_train = df[41:nrow(df), ]
 ```
   
+  
 **(d)** Perform two of the following in order to predict mpg_binary:  
-
 1. *K-nearest neighbor Analysis:*
 ```{r, message=FALSE}
 
 # Load library
 require(class)
 
-# Normalize variables to range from 0 to 1 to remove influence of variable ranges
+# Normalize variables to range from 0 to 1 to remove influence of different variable ranges
 # Create new normalized data frame for continuous predictor variables (columns 2:5)
 normalize = function(x){
   return((x - min(x)) / (max(x) - min(x)))
 }
 
-df_test_continuous = as.data.frame(sapply(df_test[,2:5], normalize))
-df_train_continuous = as.data.frame(sapply(df_train[,2:5], normalize))
+df_test_continuous = as.data.frame(sapply(df_test[ ,num_var], normalize))
+df_train_continuous = as.data.frame(sapply(df_train[ ,num_var], normalize))
 
 # Confirm new data structure
 print(summary(df_test_continuous))
 print(summary(df_train_continuous))
-```
 
-```{r}
-# Create data frames for target variable (binary_median) prediction
-df_test_target = df[1:40, "binary_median"]
-df_train_target = df[41:nrow(df), "binary_median"]
+# Create data frames for target variable (mpg_binary) prediction
+df_test_target = df[1:40, "mpg_binary"]
+df_train_target = df[41:nrow(df), "mpg_binary"]
 
 # Set k value
 k = floor(sqrt(nrow(df)))
 
 # Create model
-knn_mod = knn(train = df_train_continuous, test = df_test_continuous, cl = df_train_target, k = k)
-table(df_test_target, knn_mod)
+knn_mod = knn(train = df_train_continuous, test = df_test_continuous, cl = df_train_target, k = k, prob = T)
 
 # Create table to visualize model results
+# table(df_test_target, knn_mod)
 ```
 |                   |                 |        KNN model prediction|      |
 |------------------:|----------------:|:---------------:|-----------------|
 |                   |                 | 0: Below_median | 1: Above_median |
-| **Original Data** | 0: Below_median | **22**          | 2               |
+|   **Target Data** | 0: Below_median | **22**          | 2               |
 |                   | 1: Above_median | 0               | **16**          |  
+  
+*The results of the K-nearest neighbor analysis are summarized in the table above. The results in bold show the instances where the KNN model prediction matched the target data from the original data set. That is, the model correctly predicted the "binary_mpg" of 38/40 test vehicles. There were two incorrect guesses (top right quadrant) which gives an overall model error of 5%.*
 
+*This is a very simple implementation but illustrates how a few lines of code can produce very accurate predictions given a set of quality indicators. The Knn method only works for variables of the same data type, in this case continuous. Further tests could investigate the effect of choosing different k variables.*
   
 2. *Decision Tree Analysis*
-```{r, fig.width=4, fig.height=4, message=F}
+```{r, message=FALSE}
 # Load library
 require(rpart)
 require(rpart.plot)
 
 # Specify target variable
-tree_mod <- rpart(binary_median ~., data = df_train, method = "class")
+tree_mod <- rpart(mpg_binary ~., data = df_train, method = "class")
 
 ### Plot model results
 #png("Figures/Figure5_TreeA.png", width = 4, height = 4, units = 'in', res = 300)
 rpart.plot(tree_mod, type = 3, digits = 3, fallen.leaves = TRUE)
-#dev.off()
 ```
   
-![Figure2](https://github.com/pcoddo/AzaveaTest/blob/master/Figures/Figure5_TreeA.png)
->*This looks wonky, let's try re-running the model by excluding the factor 'year' variable.*  
+![Figure5](https://github.com/pcoddo/AzaveaTest/blob/master/Figures/Figure5_TreeA.png)
 
-```{r, fig.width=4, fig.height=4, message=F}
+>*This decision tree implementation is also very simple. Figure 5 shows a visual representation of how the model finds ways to split up the data. It is interesting to note that the categorical variables, "year" and "cylinders" produced the initial branches. As anticipated, the cylinder split came at the division between low numbers of cylinders (4) vs. high numbers of cylinders (6 and 8). It doesn't appear as though the "year" variable is very effective at slicing the data, despite it's early branch. A look at the model's variable importance rank confirms this:*
+
+```{r, message = FALSE}
+# Print most important variabes
+print(tree_mod$variable.importance)
+```
+
+*Here we see that number of cylinders does indeed factor highly into how the model assigns groups to "mpg_binary", while "year" doesn't produce as pure of splits. It is also clear that the continuous variables that produced strong correlations with "mpg" - ("displacement", "weight", and "horsepower") - do a good job predicting the result of "mpg_binary". However, some of these variable importance indicators are not reflected in Figure 5.*
+
+*Out of curiosity, I try re-running the model with only the continuous variables to see the effect of including factored predictors (Figure 6).*
+  
+```{r, message=FALSE}
 # Re-run model to exclude categorical variables
-# Re-combine continuous training set with 'binary_median' variable 
-df_train_continuous = data.frame(sapply(df_train[,2:5], normalize), df_train$binary_median)
-colnames(df_train_continuous)[5] = "binary_median"
+# Re-combine continuous training set with 'mpg_binary' variable 
+df_test_continuous = data.frame(df_test[ ,num_var])
+df_train_continuous = data.frame(df_train[ ,num_var], df_train$mpg_binary)
+colnames(df_train_continuous)[5] = "mpg_binary"
 
-tree_mod2 <- rpart(binary_median ~., data = df_train_continuous)
+tree_mod2 <- rpart(mpg_binary ~., data = df_train_continuous)
 
 ### Plot new results
 #png("Figures/Figure6_TreeB.png", width = 4, height = 4, units = 'in', res = 300)
 rpart.plot(tree_mod2, type = 3, digits = 3, fallen.leaves = TRUE)
-#dev.off()
 ```
   
 ![Figure6](https://github.com/pcoddo/AzaveaTest/blob/master/Figures/Figure6_TreeB.png)  
 
+*Subsetting just these four predictor variables produces what seems to be a cleaner decision tree, with branches and corresponding variable importance factors that correspond to our earlier observations regarding variable relationships:*
+
+```{r, message = FALSE}
+# Print most important variabes
+print(tree_mod2$variable.importance)
+```
+
+*Now that we see the model can successfully partition the data to classify observations according to "binary_mpg," we can make a prediction about our test data.*
+
 ```{r}
 # Predict test data based on trained model
-tree_mod_test <- predict(tree_mod2, df_test_continuous, type = "class")
-table(df_test_target, tree_mod_test)
+tree_mod_test2 <- predict(tree_mod2, df_test_continuous, type = "class")
 
 # Create table to visualize model results
+# table(df_test_target, tree_mod_test2)
 ```
 |                   |                 | **Decision Tree model prediction**||
 |------------------:|----------------:|:---------------:|-----------------|
 |                   |                 | 0: Below_median | 1: Above_median |
-| **Original Data** | 0: Below_median | **22**          | 2               |
+|   **Target Data** | 0: Below_median | **23**          | 1               |
 |                   | 1: Above_median | 0               | **16**          |  
+
+
+*The results of the Decision Tree analysis are summarized in the table above. Our refined model correctly predicted the "mpg_binary" status of 39/40 test observations. The single misclassification results in a test error of 2.5%.*
+
+*As I previously mentioned, I excluded the "mpg" variable from this analysis because I expected the classifying models to focus too much at the expense of the other predictor variables. Out of curiousity, I try plotting producing a tree with the original "mpg" variable included to see if it was, in fact, a useful predictor of "mpg_binary."*
+
+```{r, message = FALSE}
+# Randomize original dataset by assigning indices random numbers
+set.seed(90210)
+rand = runif(nrow(df_original))
+df_all = df_original[order(rand), c(1:7, 10)]
+
+# Create test (n = 40) and training sets from original data frame 
+df_test = df_all[1:40, ]
+df_train = df_all[41:nrow(df), ]
+
+# Specify target variable
+tree_mod3 <- rpart(mpg_binary ~., data = df_train, method = "class")
+
+### Plot model results
+#png("Figures/Figure7_TreeC_allVars.png", width = 4, height = 4, units = 'in', res = 300)
+rpart.plot(tree_mod3, type = 3, digits = 3, fallen.leaves = TRUE)
+
+# Predict based on model with all variables included
+tree_mod_test3 <- predict(tree_mod3, df_test, type = "class")
+#table(df_test_target, tree_mod_test3)
+```
+![Figure7](https://github.com/pcoddo/AzaveaTest/blob/master/Figures/Figure7_TreeC_allVars.png)  
+  
+|                   |                 | **Decision Tree model prediction**||
+|------------------:|----------------:|:---------------:|-----------------|
+|                   |                 | 0: Below_median | 1: Above_median |
+|   **Target Data** | 0: Below_median | **24**          | 0               |
+|                   | 1: Above_median | 0               | **16**          |  
+
+*Perhaps unsurprisingly, the decision tree model found perfect fidelity when classifying observations "binary_mpg" based on just the "mpg" variable (Figure 7, table). This exercise demonstrates how even simple models can be very useful in predicting behavior in unknown data, and illustrates the importance of performing multiple analyses to achieve the best fit.*  
+
